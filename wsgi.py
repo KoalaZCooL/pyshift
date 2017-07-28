@@ -23,8 +23,7 @@ def application(environ, start_response):
     query_parsed = urlparse.parse_qs(environ['QUERY_STRING'])
 
     if environ['PATH_INFO'] == '/api/token':
-        #af29ff93-3045-4c72-ae27-12480fdeb7bf
-        response_body = 'Z'
+        response_body = 'af29ff93-3045-4c72-ae27-12480fdeb7bf'
     elif environ['PATH_INFO'] == '/api/reversewords':
         word_reverse = []
 

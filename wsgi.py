@@ -11,6 +11,12 @@ except ImportError:
     import urlparse
 
 
+def fib(n, memo={0: 0, 1: 1}):
+    if n not in memo:
+        memo[n] = fib(n - 1) + fib(n - 2)
+    return memo[n]
+
+
 def application(environ, start_response):
     ctype = 'application/json'
     query_parsed = urlparse.parse_qs(environ['QUERY_STRING'])
@@ -30,12 +36,30 @@ def application(environ, start_response):
     elif environ['PATH_INFO'] == '/api/fibonacci':
         n = int(query_parsed.get('n')[0])
 
-        fibonacci = ((1+sqrt(5))**n-(1-sqrt(5))**n)/(2**n*sqrt(5))
-
-        response_body = json.dumps((round(fibonacci)))
+        try:
+            result = fib(abs(n))
+            response_body = '' if abs(n) > 92 else json.dumps(result if n > 0 else 0-result)
+        except:
+            response_body = ''
 
     elif environ['PATH_INFO'] == '/api/triangletype':
-        response_body = 'triangletype'
+        a = int(query_parsed.get('a')[0])
+        b = int(query_parsed.get('b')[0])
+        c = int(query_parsed.get('c')[0])
+
+        pairs = sum([a == b, b == c, c == a])
+
+        if a < 1 or b < 1 or c < 1 or a > b+c or b > a+c or c > a+b:
+            # ( (2*max(a,b,c) )<(int(a)+int(b)+int(c)) ) )
+            response_body = 'Error'
+        elif pairs > 1:
+            response_body = 'Equilateral'
+        elif pairs == 1:
+            response_body = 'Isosceles'
+        else:
+            response_body = 'Scalene'
+        response_body = json.dumps(response_body)
+
     elif environ['PATH_INFO'] == '/env':
         response_body = ['%s: %s' % (key, value)
                     for key, value in sorted(environ.items())]

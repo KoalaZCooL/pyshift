@@ -19,6 +19,7 @@ def fib(n, memo={0: 0, 1: 1}):
 
 def application(environ, start_response):
     ctype = 'application/json'
+    status = '200 OK'
     query_parsed = urlparse.parse_qs(environ['QUERY_STRING'])
 
     if environ['PATH_INFO'] == '/api/token':
@@ -35,7 +36,8 @@ def application(environ, start_response):
         for s in original:
             word_reverse.append(s[::-1])
 
-        response_body = json.dumps(' '.join(word_reverse)).encode('utf-8')
+        response_body = json.dumps(' '.join(word_reverse))
+        response_body = response_body.encode('utf-8')
 
     elif environ['PATH_INFO'] == '/api/fibonacci':
         n = int(query_parsed.get('n')[0])
@@ -44,6 +46,7 @@ def application(environ, start_response):
             result = fib(abs(n))
             response_body = '' if abs(n) > 92 else json.dumps(0-result if n < 0 == n % 2 else result)
         except:
+            status = '400 Bad Request'
             response_body = ''
 
     elif environ['PATH_INFO'] == '/api/triangletype':
@@ -72,7 +75,6 @@ def application(environ, start_response):
         response_body = '''Hello World'''
     # response_body = response_body.encode('utf-8')
 
-    status = '200 OK'
     response_headers = [('Content-Type', ctype), ('Content-Length', str(len(response_body)))]
     #
     start_response(status, response_headers)

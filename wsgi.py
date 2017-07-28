@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 import os
 import json
+from math import sqrt
+
 try:
     # for Python3
     import urllib.parse as urlparse
@@ -8,8 +10,8 @@ except ImportError:
     # for Python2
     import urlparse
 
-def application(environ, start_response):
 
+def application(environ, start_response):
     ctype = 'application/json'
     query_parsed = urlparse.parse_qs(environ['QUERY_STRING'])
 
@@ -26,7 +28,12 @@ def application(environ, start_response):
         response_body = json.dumps(' '.join(word_reverse))
 
     elif environ['PATH_INFO'] == '/api/fibonacci':
-        response_body = json.dumps(' '.join([]))
+        n = int(query_parsed.get('n')[0])
+
+        fibonacci = ((1+sqrt(5))**n-(1-sqrt(5))**n)/(2**n*sqrt(5))
+
+        response_body = json.dumps((round(fibonacci)))
+
     elif environ['PATH_INFO'] == '/api/triangletype':
         response_body = 'triangletype'
     elif environ['PATH_INFO'] == '/env':

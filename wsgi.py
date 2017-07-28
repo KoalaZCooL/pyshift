@@ -35,8 +35,7 @@ def application(environ, start_response):
         for s in original:
             word_reverse.append(s[::-1])
 
-        response_body = json.dumps(' '.join(word_reverse))
-        response_body = response_body.encode('utf-8')
+        response_body = json.dumps(' '.join(word_reverse), ensure_ascii=False).encode('utf-8')
 
     elif environ['PATH_INFO'] == '/api/fibonacci':
         n = int(query_parsed.get('n')[0])

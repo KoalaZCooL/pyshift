@@ -35,14 +35,14 @@ def application(environ, start_response):
         for s in original:
             word_reverse.append(s[::-1])
 
-        response_body = json.dumps(' '.join(word_reverse))
+        response_body = json.dumps(' '.join(word_reverse)).encode('utf-8')
 
     elif environ['PATH_INFO'] == '/api/fibonacci':
         n = int(query_parsed.get('n')[0])
 
         try:
             result = fib(abs(n))
-            response_body = '' if abs(n) > 92 else json.dumps(result if n > 0 else 0-result)
+            response_body = '' if abs(n) > 92 else json.dumps(0-result if n < 0 == n % 2 else result)
         except:
             response_body = ''
 
@@ -53,8 +53,8 @@ def application(environ, start_response):
 
         pairs = sum([a == b, b == c, c == a])
 
-        if a < 1 or b < 1 or c < 1 or a > b+c or b > a+c or c > a+b:
-            # ( (2*max(a,b,c) )<(int(a)+int(b)+int(c)) ) )
+        if a < 1 or b < 1 or c < 1 or a >= b+c or b >= a+c or c >= a+b:
+            # or ((2*max(a, b, c)) < (a+b+c))
             response_body = 'Error'
         elif pairs > 1:
             response_body = 'Equilateral'
@@ -64,10 +64,10 @@ def application(environ, start_response):
             response_body = 'Scalene'
         response_body = json.dumps(response_body)
 
-    elif environ['PATH_INFO'] == '/env':
-        response_body = ['%s: %s' % (key, value)
-                    for key, value in sorted(environ.items())]
-        response_body = '\n'.join(response_body)
+    # elif environ['PATH_INFO'] == '/env':
+    #     response_body = ['%s: %s' % (key, value)
+    #                 for key, value in sorted(environ.items())]
+    #     response_body = '\n'.join(response_body)
     else:
         response_body = '''Hello World'''
     # response_body = response_body.encode('utf-8')

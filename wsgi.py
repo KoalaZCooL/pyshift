@@ -26,7 +26,11 @@ def application(environ, start_response):
         response_body = 'Z'
     elif environ['PATH_INFO'] == '/api/reversewords':
         word_reverse = []
-        original = query_parsed.get('sentence')[0].split(' ')
+
+        try:
+            original = query_parsed.get('sentence')[0].split(' ')
+        except:
+            original = word_reverse
 
         for s in original:
             word_reverse.append(s[::-1])
